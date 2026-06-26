@@ -171,7 +171,7 @@ export const profile: Profile = {
   contact: {
     email: "djkim9031.research@gmail.com",
     github: "https://github.com/djkim9031-research",
-    linkedin: "",
+    linkedin: "https://www.linkedin.com/in/dongjin-kim-98b867184/",
     website: "https://djkim9031-research.github.io",
   },
 
