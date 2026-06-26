@@ -7,10 +7,114 @@
     var(--bg);
 }
 
-.terminal {
+.layout {
   height: 100%;
   max-width: 900px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* neofetch-style profile panel shown above the terminal */
+.profile-card {
+  display: flex;
+  gap: clamp(16px, 4vw, 36px);
+  align-items: flex-start;
+  padding-bottom: 16px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(51, 255, 102, 0.25);
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  color: var(--green);
+  font-weight: 700;
+  font-size: clamp(18px, 4vw, 24px);
+  text-shadow: 0 0 12px rgba(51, 255, 102, 0.35);
+}
+
+.profile-rule {
+  height: 1px;
+  margin: 8px 0 10px;
+  background: linear-gradient(90deg, rgba(51, 255, 102, 0.5), transparent);
+}
+
+.hdr-row {
+  display: flex;
+  gap: 10px;
+  margin: 2px 0;
+}
+
+.hdr-label {
+  flex: 0 0 auto;
+  width: 132px;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.hdr-value {
+  color: var(--fg);
+  min-width: 0;
+}
+
+.profile-hint {
+  margin-top: 12px;
+  color: var(--dim);
+}
+
+.profile-avatar {
+  flex: 0 0 auto;
+}
+
+.profile-avatar img,
+.avatar-placeholder {
+  width: clamp(96px, 22vw, 132px);
+  height: clamp(96px, 22vw, 132px);
+  border-radius: 10px;
+}
+
+.profile-avatar img {
+  object-fit: cover;
+  border: 1px solid var(--green);
+  box-shadow: 0 0 18px rgba(51, 255, 102, 0.25);
+}
+
+.avatar-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px dashed rgba(51, 255, 102, 0.6);
+  color: var(--green);
+  font-size: 12px;
+  text-align: center;
+  box-shadow: inset 0 0 18px rgba(51, 255, 102, 0.08);
+}
+
+@media (max-width: 560px) {
+  .profile-card {
+    flex-direction: column-reverse;
+    align-items: center;
+    text-align: center;
+  }
+  .hdr-row {
+    flex-direction: column;
+    gap: 0;
+    margin: 6px 0;
+  }
+  .hdr-label {
+    width: auto;
+  }
+}
+
+.terminal {
+  flex: 1 1 auto;
+  min-height: 0;
   cursor: text;
   overflow: hidden;
   position: relative;

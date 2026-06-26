@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { runCommand, type CommandContext } from "../commands/registry";
-import { blank, dim, g, head, line, type OutputBlock } from "../output";
+import { blank, dim, g, line, type OutputBlock } from "../output";
 import { profile } from "../data/profile";
 import { Line } from "./Line";
 
@@ -12,8 +12,7 @@ interface Entry {
 }
 
 const banner: OutputBlock = [
-  line(head(profile.handle), dim(" // personal terminal")),
-  line(dim("type "), g("help"), dim(" to get started, or "), g('ask "..."'), dim(" the agent")),
+  line(dim("# interactive shell — type "), g("help"), dim(" for the list of commands")),
   blank(),
 ];
 

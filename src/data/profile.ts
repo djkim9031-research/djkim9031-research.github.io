@@ -38,6 +38,7 @@ export interface Profile {
   skills: SkillGroup[];
   contact: Contact;
   resumeUrl?: string;
+  avatarUrl?: string;
 }
 
 export const profile: Profile = {
@@ -113,4 +114,8 @@ export const profile: Profile = {
   },
 
   resumeUrl: "",
+
+  // Drop a photo in public/ (e.g. public/me.jpg) and set the path here, like
+  // "/me.jpg". While empty, a placeholder box is shown in the top-right.
+  avatarUrl: "",
 };
