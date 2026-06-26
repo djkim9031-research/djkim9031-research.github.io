@@ -1,6 +1,13 @@
 import { profile } from "../data/profile";
 import { responder } from "../agent/responder";
 import {
+  sections,
+  getSection,
+  getPost,
+  postsIn,
+} from "../data/blog";
+import { HOME, type BlogSectionId, type NavState } from "../nav";
+import {
   blank,
   dim,
   g,
@@ -14,6 +21,8 @@ import {
 
 export interface CommandContext {
   clear: () => void;
+  nav: NavState;
+  go: (next: Partial<NavState>) => void;
 }
 
 export interface Command {
@@ -103,6 +112,90 @@ function stripQuotes(s: string): string {
   return s.trim().replace(/^["']|["']$/g, "");
 }
 
+// ---- blog navigation ----
+
+function resolveSection(tok: string): BlogSectionId | null {
+  const t = tok.toLowerCase();
+  const s = sections.find(
+    (s) => s.id === t || s.id.startsWith(t) || s.label.toLowerCase().includes(t)
+  );
+  return s ? s.id : null;
+}
+
+function resolveCategory(sectionId: BlogSectionId, tok: string): string | null {
+  const t = tok.toLowerCase();
+  const c = getSection(sectionId)?.categories.find(
+    (c) => c.id === t || c.id.startsWith(t) || c.label.toLowerCase() === t
+  );
+  return c ? c.id : null;
+}
+
+function sectionListBlock(): OutputBlock {
+  const out: OutputBlock = [text("blog sections:"), blank()];
+  for (const s of sections) {
+    out.push(line(g("  " + s.id.padEnd(12)), span(s.label)));
+  }
+  out.push(blank());
+  out.push(
+    line(dim("navigate: "), g("blog <section> [category]"), dim(" or "), g("cd <name>"))
+  );
+  return out;
+}
+
+function categoryListBlock(sectionId: BlogSectionId): OutputBlock {
+  const s = getSection(sectionId);
+  if (!s) return [line(span("unknown section", "error"))];
+  if (s.categories.length === 0) {
+    return [line(head(s.label)), blank(), ...postListBlock(sectionId, null)];
+  }
+  const out: OutputBlock = [line(head(s.label)), blank(), text("categories:")];
+  for (const c of s.categories) {
+    const n = postsIn(sectionId, c.id).length;
+    out.push(line(g("  " + c.id.padEnd(12)), span(c.label), dim("  (" + n + ")")));
+  }
+  out.push(blank());
+  out.push(line(dim("open a category: "), g("cd <category>")));
+  return out;
+}
+
+function postListBlock(
+  sectionId: BlogSectionId,
+  categoryId: string | null
+): OutputBlock {
+  const ps = postsIn(sectionId, categoryId);
+  if (ps.length === 0) return [dimLine("no posts here yet — check back soon.")];
+  const out: OutputBlock = [];
+  for (const p of ps) {
+    out.push(line(g("  " + p.slug.padEnd(16)), span(p.title)));
+  }
+  out.push(blank());
+  out.push(line(dim("read a post: "), g("open <slug>")));
+  return out;
+}
+
+function postBlock(slug: string): OutputBlock {
+  const p = getPost(slug);
+  if (!p) return [line(span("no such post: ", "error"), span(slug, "error"))];
+  const out: OutputBlock = [line(head(p.title))];
+  if (p.date) out.push(line(dim(p.date)));
+  out.push(blank());
+  for (const para of p.body ?? []) out.push(text(para));
+  return out;
+}
+
+function dimLine(s: string): OutputBlock[number] {
+  return line(dim(s));
+}
+
+function listForBlog(nav: NavState): OutputBlock {
+  if (!nav.section) return sectionListBlock();
+  const s = getSection(nav.section);
+  if (nav.category || !s || s.categories.length === 0) {
+    return postListBlock(nav.section, nav.category);
+  }
+  return categoryListBlock(nav.section);
+}
+
 // Order here is the order shown by `help` and `ls`.
 const commandList: Command[] = [
   {
@@ -134,14 +227,107 @@ const commandList: Command[] = [
   { name: "contact", description: "how to reach me", run: contactBlock },
   { name: "resume", description: "link to my resume", run: resumeBlock },
   {
+    name: "blog",
+    description: "open the blog (e.g. blog technical ai)",
+    run: (args, _raw, ctx) => {
+      const [secTok, catTok] = args;
+      if (!secTok) {
+        ctx.go({ view: "blog", section: null, category: null, post: null });
+        return sectionListBlock();
+      }
+      const sec = resolveSection(secTok);
+      if (!sec) {
+        return [line(span("blog: unknown section: ", "error"), span(secTok, "error"))];
+      }
+      if (!catTok) {
+        ctx.go({ view: "blog", section: sec, category: null, post: null });
+        return categoryListBlock(sec);
+      }
+      const cat = resolveCategory(sec, catTok);
+      if (!cat) {
+        return [line(span("blog: unknown category: ", "error"), span(catTok, "error"))];
+      }
+      ctx.go({ view: "blog", section: sec, category: cat, post: null });
+      return postListBlock(sec, cat);
+    },
+  },
+  {
+    name: "cd",
+    description: "navigate (cd technical, cd ai, cd .., cd ~)",
+    run: (args, _raw, ctx) => {
+      const tok = (args[0] ?? "").toLowerCase();
+      const { view, section, category, post } = ctx.nav;
+
+      if (tok === "" || tok === "~" || tok === "home") {
+        ctx.go(HOME);
+        return [dimLine("→ home")];
+      }
+      if (tok === "..") {
+        if (view === "home") return [dimLine("already home")];
+        if (post) {
+          ctx.go({ post: null });
+          return listForBlog({ ...ctx.nav, post: null });
+        }
+        if (category) {
+          ctx.go({ category: null });
+          return categoryListBlock(section as BlogSectionId);
+        }
+        if (section) {
+          ctx.go({ section: null });
+          return sectionListBlock();
+        }
+        ctx.go(HOME);
+        return [dimLine("→ home")];
+      }
+
+      // navigate into a section or category
+      if (section) {
+        const cat = resolveCategory(section, tok);
+        if (cat) {
+          ctx.go({ category: cat, post: null });
+          return postListBlock(section, cat);
+        }
+      }
+      const sec = resolveSection(tok);
+      if (sec) {
+        ctx.go({ view: "blog", section: sec, category: null, post: null });
+        return categoryListBlock(sec);
+      }
+      return [line(span("cd: no such location: ", "error"), span(tok, "error"))];
+    },
+  },
+  {
+    name: "open",
+    description: "read a blog post (open <slug>)",
+    run: (args, _raw, ctx) => {
+      const slug = args[0];
+      if (!slug) return [text("usage: open <slug>")];
+      const p = getPost(slug);
+      if (!p) return [line(span("no such post: ", "error"), span(slug, "error"))];
+      ctx.go({ view: "blog", section: p.section, category: p.category, post: p.slug });
+      return postBlock(p.slug);
+    },
+  },
+  {
+    name: "home",
+    description: "return to the main page",
+    run: (_args, _raw, ctx) => {
+      ctx.go(HOME);
+      return [dimLine("→ home")];
+    },
+  },
+  {
     name: "ls",
-    description: "list sections",
-    run: () => [
-      line(
-        ...["about", "projects", "experience", "education", "skills", "contact", "resume"]
-          .map((s) => g(s + "  "))
-      ),
-    ],
+    description: "list the current location",
+    run: (_args, _raw, ctx) => {
+      if (ctx.nav.view === "blog") return listForBlog(ctx.nav);
+      return [
+        line(
+          ...["about", "projects", "experience", "education", "skills", "contact", "resume", "blog"]
+            .map((s) => g(s + "  "))
+        ),
+      ];
+    },
   },
   {
     name: "ask",

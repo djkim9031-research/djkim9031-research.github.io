@@ -15,6 +15,30 @@
   flex-direction: column;
 }
 
+.layout.layout-blog {
+  max-width: 1100px;
+}
+
+.top-area {
+  min-height: 0;
+}
+
+/* home: header sits at natural height, terminal fills the rest */
+.layout:not(.layout-blog) .top-area {
+  flex: 0 0 auto;
+}
+.layout:not(.layout-blog) .terminal {
+  flex: 1 1 auto;
+}
+
+/* blog: the page takes the majority, terminal docks to the bottom */
+.layout-blog .top-area {
+  flex: 1 1 auto;
+}
+.layout-blog .terminal {
+  flex: 0 0 34vh;
+}
+
 /* neofetch-style profile panel shown above the terminal */
 .profile-card {
   display: flex;
@@ -272,4 +296,158 @@ a:hover {
 .scrollback::-webkit-scrollbar-thumb {
   background: rgba(51, 255, 102, 0.25);
   border-radius: 4px;
+}
+
+/* ---- blog view ---- */
+.blog {
+  height: 100%;
+  display: flex;
+  gap: 18px;
+  min-height: 0;
+}
+
+.blog-sidebar {
+  flex: 0 0 180px;
+  overflow-y: auto;
+  padding-right: 12px;
+  border-right: 1px solid rgba(51, 255, 102, 0.2);
+}
+
+.blog-group {
+  margin-bottom: 6px;
+}
+
+.blog-sidebar button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--fg);
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.blog-sidebar button:hover {
+  background: rgba(51, 255, 102, 0.08);
+}
+.blog-sidebar .sec-label {
+  color: var(--green);
+  font-weight: 700;
+  margin-top: 8px;
+}
+.blog-sidebar .cat {
+  padding-left: 20px;
+  color: var(--fg);
+}
+.blog-sidebar button.active {
+  color: var(--green);
+  background: rgba(51, 255, 102, 0.14);
+}
+.blog-home {
+  margin-top: 18px !important;
+  color: var(--dim) !important;
+}
+
+.blog-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.blog-content h1 {
+  color: var(--green);
+  font-size: clamp(18px, 3vw, 22px);
+  margin: 0 0 8px;
+  text-shadow: 0 0 12px rgba(51, 255, 102, 0.3);
+}
+.blog-content p {
+  margin: 8px 0;
+}
+.blog-content .muted {
+  color: var(--dim);
+}
+.blog-content code {
+  color: var(--green);
+}
+.post-date {
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.post-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 1px solid rgba(51, 255, 102, 0.15);
+  border-radius: 8px;
+  font: inherit;
+  color: var(--fg);
+  padding: 10px 12px;
+  margin: 8px 0;
+  cursor: pointer;
+}
+.post-item:hover {
+  border-color: var(--green);
+  background: rgba(51, 255, 102, 0.06);
+}
+.post-title {
+  color: var(--fg);
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.cat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  background: none;
+  border: 1px solid rgba(51, 255, 102, 0.2);
+  border-radius: 10px;
+  font: inherit;
+  color: var(--fg);
+  padding: 14px;
+  cursor: pointer;
+}
+.cat-card:hover {
+  border-color: var(--green);
+  background: rgba(51, 255, 102, 0.06);
+}
+.cat-card-title {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.link-btn {
+  display: inline-block;
+  margin-top: 16px;
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--green);
+  cursor: pointer;
+  padding: 0;
+}
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .blog-sidebar {
+    flex-basis: 130px;
+  }
 }

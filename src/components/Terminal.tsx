@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { runCommand, type CommandContext } from "../commands/registry";
 import { blank, dim, g, line, type OutputBlock } from "../output";
 import { profile } from "../data/profile";
+import type { NavState } from "../nav";
 import { Line } from "./Line";
 
 interface Entry {
@@ -24,7 +25,13 @@ const PROMPT = (
   </span>
 );
 
-export function Terminal() {
+export function Terminal({
+  nav,
+  go,
+}: {
+  nav: NavState;
+  go: (next: Partial<NavState>) => void;
+}) {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [input, setInput] = useState("");
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
@@ -34,7 +41,7 @@ export function Terminal() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const idRef = useRef(0);
 
-  const ctx: CommandContext = { clear: () => setEntries([]) };
+  const ctx: CommandContext = { clear: () => setEntries([]), nav, go };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });
