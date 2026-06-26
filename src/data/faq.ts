@@ -10,11 +10,16 @@ export interface FaqEntry {
 export const faq: FaqEntry[] = [
   {
     keywords: ["who", "you", "name", "introduce", "yourself"],
-    answer: "// TODO: a short self-introduction.",
+    answer:
+      "I'm Dongjin Kim, an AI systems engineer specializing in computer vision and " +
+      "GPU compute optimization, with experience across both industry and academia.",
   },
   {
     keywords: ["do", "work", "job", "profession", "role", "focus"],
-    answer: "// TODO: describe what you do.",
+    answer:
+      "I build and accelerate real-time vision and embodied-AI systems — CUDA kernel " +
+      "development, ML runtime optimization, and the training and deployment of models " +
+      "like VLA, VA, and World Action Models. Try `skills` or `about` for more.",
   },
   {
     keywords: ["project", "projects", "built", "build", "made"],

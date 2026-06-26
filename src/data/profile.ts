@@ -43,12 +43,23 @@ export interface Profile {
 export const profile: Profile = {
   name: "Dongjin Kim",
   handle: "Dongjin Kim",
-  tagline: "// TODO: a one-line tagline",
-  profession: "// TODO: your profession / current focus",
+  tagline: "AI systems engineer — making vision and embodied-AI run fast on the GPU.",
+  profession:
+    "AI Systems Engineer specializing in computer vision and GPU compute optimization.",
 
   about: [
-    "// TODO: write a short bio here.",
-    "// Each string in this array becomes its own line.",
+    "I'm an AI systems engineer specializing in computer vision and GPU compute",
+    "optimization, working where high-performance computing meets modern machine",
+    "learning. My work spans the full stack of real-time vision and embodied-AI",
+    "systems — from low-level CUDA kernel development and ML runtime optimization",
+    "to training and deploying large-scale models in production.",
+    "",
+    "Across both industry and academia, I've designed and accelerated pipelines for",
+    "computer vision, Vision-Language-Action (VLA) and Vision-Action (VA) models, and",
+    "World Action Models, tuning them to meet demanding latency, throughput, and",
+    "efficiency targets. I focus on extracting maximum performance from modern GPU",
+    "hardware — writing custom kernels, profiling and eliminating bottlenecks, and",
+    "engineering inference and training runtimes that are both fast and reliable.",
   ],
 
   experience: [
@@ -70,7 +81,28 @@ export const profile: Profile = {
   ],
 
   skills: [
-    { group: "// TODO: category", items: ["// TODO", "skills"] },
+    {
+      group: "GPU & HPC",
+      items: [
+        "CUDA",
+        "kernel development",
+        "GPU compute optimization",
+        "ML runtime optimization",
+        "profiling & performance tuning",
+      ],
+    },
+    {
+      group: "Machine Learning",
+      items: ["deep learning", "computer vision", "model training & deployment"],
+    },
+    {
+      group: "Embodied AI",
+      items: [
+        "Vision-Language-Action (VLA) models",
+        "Vision-Action (VA) models",
+        "World Action Models",
+      ],
+    },
   ],
 
   contact: {
