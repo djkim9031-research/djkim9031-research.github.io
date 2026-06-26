@@ -20,9 +20,58 @@
   display: flex;
   gap: clamp(16px, 4vw, 36px);
   align-items: flex-start;
-  padding-bottom: 16px;
-  margin-bottom: 14px;
-  border-bottom: 1px solid rgba(51, 255, 102, 0.25);
+  padding-bottom: 12px;
+}
+
+/* "accelerator" — an optical green pulse that swishes left to right */
+.accelerator {
+  position: relative;
+  height: 3px;
+  margin: 4px 0 16px;
+  border-radius: 3px;
+  background: rgba(51, 255, 102, 0.12);
+  overflow: hidden;
+}
+
+.accel-beam {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  width: 22%;
+  min-width: 130px;
+  left: -25%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(51, 255, 102, 0.05) 35%,
+    rgba(51, 255, 102, 0.85) 92%,
+    #ccffdd 100%
+  );
+  box-shadow: 0 0 14px 2px rgba(51, 255, 102, 0.55);
+  animation: accel 2.6s linear infinite;
+}
+
+@keyframes accel {
+  0% {
+    left: -25%;
+  }
+  70% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accel-beam {
+    animation: none;
+    left: 0;
+    width: 100%;
+    min-width: 0;
+    opacity: 0.4;
+    box-shadow: none;
+  }
 }
 
 .profile-info {

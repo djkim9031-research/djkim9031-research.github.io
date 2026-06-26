@@ -6,6 +6,9 @@ export default function App() {
     <div className="screen">
       <div className="layout">
         <Header />
+        <div className="accelerator" aria-hidden="true">
+          <div className="accel-beam" />
+        </div>
         <Terminal />
       </div>
     </div>
