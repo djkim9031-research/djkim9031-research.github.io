@@ -25,7 +25,8 @@ export const faq: FaqEntry[] = [
     keywords: ["experience", "work", "history", "company", "companies", "career", "where"],
     answer:
       "I've worked at Intuitive Surgical (AI & robotics research), Dexterity (GPU " +
-      "compute acceleration), and ABB Robotics (computer vision & AI). Try " +
+      "compute acceleration), Honeywell (robotics perception & AI), ABB Robotics " +
+      "(computer vision & AI), and Deloitte (blockchain consulting intern). Try " +
       "`experience` for details.",
   },
   {

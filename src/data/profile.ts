@@ -91,6 +91,14 @@ export const profile: Profile = {
         "kernel development, TensorRT, and OptiX integration.",
     },
     {
+      role: "R&D Engineer / Scientist II",
+      org: "Honeywell",
+      period: "Feb 2024 – Nov 2024",
+      summary:
+        "Robotics perception and AI — computer vision and performance optimization " +
+        "for robotic systems.",
+    },
+    {
       role: "R&D Software Engineer",
       org: "ABB Robotics",
       period: "2019 – 2023",
@@ -100,6 +108,16 @@ export const profile: Profile = {
         "adopted over competitor solutions) and developed first-of-its-kind " +
         "AI-powered 3D perception for general robot item picking, alongside 2D/3D " +
         "perception and bin-packing R&D.",
+    },
+    {
+      role: "Consultant — Blockchain (Intern)",
+      org: "Deloitte Consulting",
+      period: "2018",
+      summary:
+        "Blockchain team intern. Built and configured Hyperledger private-blockchain " +
+        "and cloud-computing solutions for clients, developed chaincode / smart " +
+        "contracts in C and Go, and supported technical consulting, data analytics, " +
+        "and project management.",
     },
   ],
 
