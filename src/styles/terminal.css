@@ -1,0 +1,121 @@
+.screen {
+  height: 100%;
+  padding: clamp(12px, 4vw, 40px);
+  /* faint CRT vignette + glow */
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(51, 255, 102, 0.04), transparent 60%),
+    var(--bg);
+}
+
+.terminal {
+  height: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  cursor: text;
+  overflow: hidden;
+  position: relative;
+}
+
+/* subtle scanlines */
+.terminal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    transparent 0 2px,
+    rgba(0, 0, 0, 0.12) 2px 3px
+  );
+  opacity: 0.35;
+}
+
+.scrollback {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.out-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.entry {
+  margin-bottom: 2px;
+}
+
+.prompt {
+  user-select: none;
+}
+
+.tone-default {
+  color: var(--fg);
+}
+.tone-green {
+  color: var(--green);
+}
+.tone-dim {
+  color: var(--dim);
+}
+.tone-error {
+  color: var(--error);
+}
+.tone-agent {
+  color: var(--agent);
+}
+.tone-head {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+a.tone-green,
+a.tone-default {
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+}
+a:hover {
+  filter: brightness(1.2);
+}
+
+.input-line {
+  display: flex;
+  align-items: center;
+}
+
+.cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--fg);
+  font: inherit;
+  caret-color: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+/* blinking block caret rendered after the input */
+.caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  margin-left: -0.2em;
+  background: var(--green);
+  animation: blink 1s steps(1) infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* thin green scrollbar */
+.scrollback::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollback::-webkit-scrollbar-thumb {
+  background: rgba(51, 255, 102, 0.25);
+  border-radius: 4px;
+}

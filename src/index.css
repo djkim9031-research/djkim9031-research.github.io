@@ -1,0 +1,28 @@
+:root {
+  --bg: #0b0e0c;
+  --fg: #e6f0e6;
+  --green: #33ff66;
+  --dim: #5c6b5c;
+  --error: #ff5f56;
+  --agent: #c8ffd4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "JetBrains Mono", "SFMono-Regular", "Menlo", "Consolas",
+    "Liberation Mono", monospace;
+  font-size: 15px;
+  line-height: 1.5;
+}
