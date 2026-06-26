@@ -22,6 +22,19 @@ export const faq: FaqEntry[] = [
       "like VLA, VA, and World Action Models. Try `skills` or `about` for more.",
   },
   {
+    keywords: ["experience", "work", "history", "company", "companies", "career", "where"],
+    answer:
+      "I've worked at Intuitive Surgical (AI & robotics research), Dexterity (GPU " +
+      "compute acceleration), and ABB Robotics (computer vision & AI). Try " +
+      "`experience` for details.",
+  },
+  {
+    keywords: ["education", "study", "studied", "school", "university", "degree", "academic"],
+    answer:
+      "I hold an MSc in Electrical & Electronics Engineering from the University of " +
+      "Glasgow and a BSc in EEE from Yonsei University. Try `education` for details.",
+  },
+  {
     keywords: ["project", "projects", "built", "build", "made"],
     answer: "// TODO: highlight a project or two. Tip: try the `projects` command.",
   },

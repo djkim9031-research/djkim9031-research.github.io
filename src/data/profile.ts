@@ -20,6 +20,12 @@ export interface SkillGroup {
   items: string[];
 }
 
+export interface EducationEntry {
+  school: string;
+  degree: string;
+  period?: string;
+}
+
 export interface Contact {
   email?: string;
   github?: string;
@@ -34,6 +40,7 @@ export interface Profile {
   profession: string;
   about: string[];
   experience: ExperienceEntry[];
+  education: EducationEntry[];
   projects: ProjectEntry[];
   skills: SkillGroup[];
   contact: Contact;
@@ -65,10 +72,47 @@ export const profile: Profile = {
 
   experience: [
     {
-      role: "// TODO: role",
-      org: "// TODO: organization",
-      period: "// TODO: 20XX – present",
-      summary: "// TODO: what you did / impact.",
+      role: "Senior Systems Research Engineer — AI & Robotics",
+      org: "Intuitive Surgical",
+      period: "May 2026 – Present",
+      summary:
+        "Future-forward research on GPU model training and inference optimization, " +
+        "and on developing Vision Foundation Models (VFM), Vision-Language-Action " +
+        "(VLA), and World Action Models (WAM) for surgical robots.",
+    },
+    {
+      role: "Senior Software Engineer — Compute Acceleration",
+      org: "Dexterity, Inc.",
+      period: "Nov 2024 – May 2026",
+      summary:
+        "Computer vision, AI, and GPU compute acceleration. Built a fully " +
+        "GPU-resident vision pipeline (32× data ingestion, 10–100× speedup) that " +
+        "shipped to customer-site deployment — using Nsight profiling, custom CUDA " +
+        "kernel development, TensorRT, and OptiX integration.",
+    },
+    {
+      role: "R&D Software Engineer",
+      org: "ABB Robotics",
+      period: "2019 – 2023",
+      summary:
+        "Computer vision and AI for robotics. Led CUDA parallelization of 3D " +
+        "point-cloud processing for robot path optimization (multi-fold speedup, " +
+        "adopted over competitor solutions) and developed first-of-its-kind " +
+        "AI-powered 3D perception for general robot item picking, alongside 2D/3D " +
+        "perception and bin-packing R&D.",
+    },
+  ],
+
+  education: [
+    {
+      school: "University of Glasgow",
+      degree: "MSc, Electrical & Electronics Engineering",
+      period: "2016 – 2017",
+    },
+    {
+      school: "Yonsei University",
+      degree: "BSc, Electrical & Electronics Engineering",
+      period: "2008 – 2015",
     },
   ],
 

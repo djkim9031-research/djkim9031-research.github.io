@@ -69,6 +69,18 @@ function skillsBlock(): OutputBlock {
   );
 }
 
+function educationBlock(): OutputBlock {
+  const out: OutputBlock = [];
+  profile.education.forEach((e, i) => {
+    if (i > 0) out.push(blank());
+    out.push(line(head(e.school)));
+    out.push(
+      line(dim("  " + e.degree + (e.period ? "  ·  " + e.period : "")))
+    );
+  });
+  return out;
+}
+
 function contactBlock(): OutputBlock {
   const c = profile.contact;
   const out: OutputBlock = [];
@@ -117,6 +129,7 @@ const commandList: Command[] = [
   { name: "profession", description: "what I work on", run: professionBlock },
   { name: "projects", description: "selected projects", run: projectsBlock },
   { name: "experience", description: "work history", run: experienceBlock },
+  { name: "education", description: "academic background", run: educationBlock },
   { name: "skills", description: "tools & technologies", run: skillsBlock },
   { name: "contact", description: "how to reach me", run: contactBlock },
   { name: "resume", description: "link to my resume", run: resumeBlock },
@@ -125,7 +138,7 @@ const commandList: Command[] = [
     description: "list sections",
     run: () => [
       line(
-        ...["about", "projects", "experience", "skills", "contact", "resume"]
+        ...["about", "projects", "experience", "education", "skills", "contact", "resume"]
           .map((s) => g(s + "  "))
       ),
     ],
