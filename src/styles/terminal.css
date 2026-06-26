@@ -45,13 +45,13 @@
 
 .hdr-row {
   display: flex;
-  gap: 10px;
-  margin: 2px 0;
+  gap: 28px;
+  margin: 3px 0;
 }
 
 .hdr-label {
   flex: 0 0 auto;
-  width: 132px;
+  width: 170px;
   color: var(--green);
   white-space: nowrap;
 }

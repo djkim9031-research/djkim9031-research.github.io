@@ -46,7 +46,6 @@ export function Header() {
         <div className="profile-name">{profile.name}</div>
         <div className="profile-rule" />
         <Row label="role" value={profile.profession} />
-        <Row label="focus" value={profile.tagline} />
         {profile.skills.map((s) => (
           <Row key={s.group} label={s.group} value={s.items.join(" · ")} />
         ))}
