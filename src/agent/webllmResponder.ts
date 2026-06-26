@@ -43,18 +43,34 @@ async function getEngine(hooks?: AgentHooks): Promise<any> {
   return enginePromise;
 }
 
+// When WebGPU isn't usable, answer from the built-in info but say why so the
+// behavior is never a silent mystery.
+async function fallback(reason: string, question: string, profile: Profile) {
+  const scripted = await scriptedResponder.respond(question, profile);
+  return `${reason}\n${scripted}`;
+}
+
 export const webllmResponder: AgentResponder = {
   async respond(question, profile, hooks) {
-    const hasGPU =
-      typeof navigator !== "undefined" && "gpu" in navigator;
-    if (!hasGPU) {
-      hooks?.onProgress?.(
-        "(in-browser LLM needs WebGPU — using built-in answers instead)"
+    if (typeof navigator === "undefined" || !("gpu" in navigator)) {
+      return fallback(
+        "(no WebGPU in this browser — the live LLM needs desktop Chrome/Edge. Built-in answer below.)",
+        question,
+        profile
       );
-      return scriptedResponder.respond(question, profile);
     }
 
     try {
+      const gpu = (navigator as unknown as { gpu: { requestAdapter(): Promise<unknown> } }).gpu;
+      const adapter = await gpu.requestAdapter();
+      if (!adapter) {
+        return fallback(
+          "(WebGPU is present but no GPU adapter is available — enable hardware acceleration / Vulkan. Built-in answer below.)",
+          question,
+          profile
+        );
+      }
+
       const engine = await getEngine(hooks);
       hooks?.onProgress?.("thinking…");
 
@@ -76,9 +92,11 @@ export const webllmResponder: AgentResponder = {
         }
       }
       return full.trim() || "(no response)";
-    } catch {
-      hooks?.onProgress?.("(couldn't load the in-browser LLM — using built-in answers)");
-      return scriptedResponder.respond(question, profile);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      // reset so a later attempt can retry the load
+      enginePromise = null;
+      return fallback(`(in-browser LLM error: ${msg})`, question, profile);
     }
   },
 };
