@@ -70,7 +70,10 @@ export function Terminal({
         e.map((x) => (x.id === id ? { ...x, output: out, pending: false } : x))
       );
 
-    const result = runCommand(raw, ctx);
+    // commands can stream live updates into this entry (e.g. the agent reply)
+    const runCtx: CommandContext = { ...ctx, stream: finalize };
+
+    const result = runCommand(raw, runCtx);
     if (result instanceof Promise) finalize(await result);
     else finalize(result);
   }

@@ -1,14 +1,20 @@
 import type { Profile } from "../data/profile";
 
-// The terminal talks to the agent only through this interface. Swapping the
-// scripted responder for a real LLM later means implementing `respond` against
-// a network call — no UI or command code has to change.
-export interface AgentResponder {
-  respond(question: string, profile: Profile): Promise<string>;
+// Optional callbacks a responder can use to stream status and partial output
+// back to the terminal while it works (e.g. model download progress, tokens).
+export interface AgentHooks {
+  onProgress?: (status: string) => void;
+  onToken?: (partial: string) => void;
 }
 
-import { scriptedResponder } from "./scriptedResponder";
+// The terminal talks to the agent only through this interface. Swapping the
+// implementation later (e.g. a fine-tuned model) needs no UI or command changes.
+export interface AgentResponder {
+  respond(question: string, profile: Profile, hooks?: AgentHooks): Promise<string>;
+}
 
-// The active responder. Point this at a different implementation to go live
-// with a real model (see llmResponder.ts).
-export const responder: AgentResponder = scriptedResponder;
+import { webllmResponder } from "./webllmResponder";
+
+// Active responder: a real in-browser LLM (WebLLM) where WebGPU is available,
+// falling back to the scripted answers otherwise.
+export const responder: AgentResponder = webllmResponder;

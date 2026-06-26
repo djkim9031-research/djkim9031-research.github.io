@@ -23,6 +23,8 @@ export interface CommandContext {
   clear: () => void;
   nav: NavState;
   go: (next: Partial<NavState>) => void;
+  // live-update the running command's output (used for streamed agent replies)
+  stream?: (block: OutputBlock) => void;
 }
 
 export interface Command {
@@ -331,13 +333,19 @@ const commandList: Command[] = [
   },
   {
     name: "ask",
-    description: 'ask the agent, e.g. ask "what do you do?"',
-    run: async (_args, raw): Promise<OutputBlock> => {
+    description: "ask the agent anything (in-browser LLM)",
+    run: async (_args, raw, ctx): Promise<OutputBlock> => {
       const question = stripQuotes(raw);
       if (!question) {
         return [text('usage: ask "<your question>"')];
       }
-      const answer = await responder.respond(question, profile);
+      const render = (s: string, tone: "agent" | "dim" = "agent") =>
+        ctx.stream?.([line(g("[agent] "), span(s, tone))]);
+      render("…", "dim");
+      const answer = await responder.respond(question, profile, {
+        onProgress: (msg) => render(msg, "dim"),
+        onToken: (full) => render(full, "agent"),
+      });
       return [line(g("[agent] "), span(answer, "agent"))];
     },
   },

@@ -27,3 +27,6 @@ export const scriptedResponder: AgentResponder = {
     return bestMatch(question);
   },
 };
+
+// (the optional hooks parameter is accepted via the AgentResponder type but the
+// scripted responder has nothing to stream, so it ignores it.)
