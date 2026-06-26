@@ -72,13 +72,14 @@
 
 .profile-avatar img,
 .avatar-placeholder {
-  width: clamp(96px, 22vw, 132px);
-  height: clamp(96px, 22vw, 132px);
+  width: clamp(116px, 27vw, 164px);
+  height: clamp(116px, 27vw, 164px);
   border-radius: 10px;
 }
 
 .profile-avatar img {
   object-fit: cover;
+  object-position: center 35%;
   border: 1px solid var(--green);
   box-shadow: 0 0 18px rgba(51, 255, 102, 0.25);
 }

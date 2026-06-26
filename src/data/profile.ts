@@ -117,5 +117,5 @@ export const profile: Profile = {
 
   // Drop a photo in public/ (e.g. public/me.jpg) and set the path here, like
   // "/me.jpg". While empty, a placeholder box is shown in the top-right.
-  avatarUrl: "",
+  avatarUrl: "/profile.jpg",
 };
