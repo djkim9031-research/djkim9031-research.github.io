@@ -42,7 +42,7 @@ export interface Profile {
 
 export const profile: Profile = {
   name: "Dongjin Kim",
-  handle: "djkim",
+  handle: "Dongjin Kim",
   tagline: "// TODO: a one-line tagline",
   profession: "// TODO: your profession / current focus",
 
