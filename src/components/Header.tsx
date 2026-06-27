@@ -53,6 +53,9 @@ export function Header() {
         <div className="profile-hint">
           type <span className="tone-green">help</span> to explore, or{" "}
           <span className="tone-green">ask "…"</span> the agent below
+          <span className="tone-dim">
+            {" "}· best on desktop for full LLM-powered responses
+          </span>
         </div>
       </div>
 
