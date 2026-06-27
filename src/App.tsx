@@ -1,13 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "./components/Header";
 import { Terminal } from "./components/Terminal";
 import { BlogView } from "./components/BlogView";
 import { ProjectView } from "./components/ProjectView";
+import { AnalyticsView } from "./components/AnalyticsView";
 import { HOME, type NavState } from "./nav";
+import { trackNavigation } from "./analytics/tracker";
 
 export default function App() {
   const [nav, setNav] = useState<NavState>(HOME);
-  const go = (next: Partial<NavState>) => setNav((prev) => ({ ...prev, ...next }));
+  const [showAnalytics, setShowAnalytics] = useState(
+    window.location.hash === "#analytics"
+  );
+
+  useEffect(() => {
+    const onHash = () => setShowAnalytics(window.location.hash === "#analytics");
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  const go = (next: Partial<NavState>) => {
+    setNav((prev) => {
+      const merged = { ...prev, ...next };
+      trackNavigation(merged.view);
+      return merged;
+    });
+  };
+
+  if (showAnalytics) {
+    return (
+      <div className="screen">
+        <AnalyticsView />
+      </div>
+    );
+  }
 
   const isFullPage = nav.view === "blog" || nav.view === "projects";
 

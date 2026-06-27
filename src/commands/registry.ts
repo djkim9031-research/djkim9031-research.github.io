@@ -1,5 +1,6 @@
 import { profile } from "../data/profile";
 import { responder } from "../agent/responder";
+import { trackCommand, trackPrompt } from "../analytics/tracker";
 import {
   sections,
   getSection,
@@ -433,6 +434,7 @@ const commandList: Command[] = [
       if (!question) {
         return [text('usage: ask "<your question>"')];
       }
+      trackPrompt(question);
       const render = (s: string, tone: "agent" | "dim" = "agent") =>
         ctx.stream?.([line(g("[agent] "), span(s, tone))]);
       render("…", "dim");
@@ -476,5 +478,6 @@ export function runCommand(
       ),
     ];
   }
+  trackCommand(name, raw);
   return cmd.run(args, raw, ctx);
 }
