@@ -110,7 +110,7 @@ export const profile: Profile = {
         "perception and bin-packing R&D.",
     },
     {
-      role: "Consultant — Blockchain (Intern)",
+      role: "Technical Consultant (Intern)",
       org: "Deloitte Consulting",
       period: "2018",
       summary:
