@@ -142,13 +142,6 @@ function contactBlock(): OutputBlock {
   return out;
 }
 
-function resumeBlock(): OutputBlock {
-  if (profile.resumeUrl) {
-    return [line(g("resume: "), link(profile.resumeUrl, profile.resumeUrl))];
-  }
-  return [text("No resume linked yet. Set `resumeUrl` in src/data/profile.ts.")];
-}
-
 function stripQuotes(s: string): string {
   return s.trim().replace(/^["']|["']$/g, "");
 }
@@ -282,7 +275,6 @@ const commandList: Command[] = [
   { name: "education", description: "academic background", run: educationBlock },
   { name: "skills", description: "tools & technologies", run: skillsBlock },
   { name: "contact", description: "how to reach me", run: contactBlock },
-  { name: "resume", description: "link to my resume", run: resumeBlock },
   {
     name: "blog",
     description: "open the blog (e.g. blog technical ai)",
@@ -427,7 +419,7 @@ const commandList: Command[] = [
       }
       return [
         line(
-          ...["about", "projects", "experience", "education", "skills", "contact", "resume", "blog"]
+          ...["about", "projects", "experience", "education", "skills", "contact", "blog"]
             .map((s) => g(s + "  "))
         ),
       ];
