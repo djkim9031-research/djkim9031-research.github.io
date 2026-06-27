@@ -13,8 +13,8 @@ export interface AgentResponder {
   respond(question: string, profile: Profile, hooks?: AgentHooks): Promise<string>;
 }
 
-import { webllmResponder } from "./webllmResponder";
+import { transformersResponder } from "./transformersResponder";
 
-// Active responder: a real in-browser LLM (WebLLM) where WebGPU is available,
-// falling back to the scripted answers otherwise.
-export const responder: AgentResponder = webllmResponder;
+// Active responder: runs a small LLM in-browser via Transformers.js (WebGPU
+// when available, WASM otherwise), falling back to scripted answers on error.
+export const responder: AgentResponder = transformersResponder;
