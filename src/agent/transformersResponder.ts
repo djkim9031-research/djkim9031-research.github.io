@@ -3,9 +3,10 @@ import type { AgentResponder, AgentHooks } from "./responder";
 import { scriptedResponder } from "./scriptedResponder";
 
 // Small instruction-tuned model that runs well in the browser.
-// Transformers.js will use WebGPU when available and fall back to WASM,
-// so this works in every modern browser — no hard WebGPU requirement.
+// Loaded from CDN at runtime (not bundled) so the main bundle stays small
+// and mobile browsers never download the heavy WASM/JS.
 const MODEL_ID = "HuggingFaceTB/SmolLM2-360M-Instruct";
+const CDN_URL = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.1";
 
 // Lazily loaded on first use and reused afterwards.
 let pipelinePromise: Promise<any> | null = null;
@@ -34,10 +35,15 @@ function systemPrompt(profile: Profile): string {
   ].join(" ");
 }
 
+// Load transformers.js from CDN at runtime so nothing is bundled.
+async function loadTransformers(): Promise<any> {
+  return import(/* @vite-ignore */ CDN_URL);
+}
+
 async function getPipeline(hooks?: AgentHooks): Promise<any> {
   if (!pipelinePromise) {
     pipelinePromise = (async () => {
-      const { pipeline, env } = await import("@huggingface/transformers");
+      const { pipeline, env } = await loadTransformers();
 
       // Allow running in the browser main thread (no worker required).
       env.allowLocalModels = false;
