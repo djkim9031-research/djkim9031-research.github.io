@@ -101,7 +101,7 @@ export const profile: Profile = {
     {
       role: "R&D Software Engineer",
       org: "ABB Robotics",
-      period: "2019 – 2023",
+      period: "Feb 2019 – Nov 2023",
       summary:
         "Computer vision and AI for robotics. Led CUDA parallelization of 3D " +
         "point-cloud processing for robot path optimization (multi-fold speedup, " +
@@ -112,7 +112,7 @@ export const profile: Profile = {
     {
       role: "Technical Consultant (Intern)",
       org: "Deloitte Consulting",
-      period: "2018",
+      period: "Aug 2018 – Dec 2018",
       summary:
         "Blockchain team intern. Built and configured Hyperledger private-blockchain " +
         "and cloud-computing solutions for clients, developed chaincode / smart " +
