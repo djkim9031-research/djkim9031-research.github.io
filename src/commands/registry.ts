@@ -6,6 +6,11 @@ import {
   getPost,
   postsIn,
 } from "../data/blog";
+import {
+  categories as projCategories,
+  getProject,
+  projectsIn,
+} from "../data/projects";
 import { HOME, type BlogSectionId, type NavState } from "../nav";
 import {
   blank,
@@ -51,15 +56,49 @@ function professionBlock(): OutputBlock {
   return [line(g("focus: "), span(profile.profession))];
 }
 
-function projectsBlock(): OutputBlock {
+// ---- projects navigation ----
+
+function resolveProjCategory(tok: string): string | null {
+  const t = tok.toLowerCase();
+  const c = projCategories.find(
+    (c) => c.id === t || c.id.startsWith(t) || c.label.toLowerCase().includes(t)
+  );
+  return c ? c.id : null;
+}
+
+function projCategoryListBlock(): OutputBlock {
+  const out: OutputBlock = [line(head("Projects")), blank(), text("categories:")];
+  for (const c of projCategories) {
+    const n = projectsIn(c.id).length;
+    out.push(line(g("  " + c.id.padEnd(12)), span(c.label), dim("  (" + n + ")")));
+  }
+  out.push(blank());
+  out.push(line(dim("browse: "), g("projects <category>"), dim(" or "), g("cd <name>")));
+  return out;
+}
+
+function projListBlock(categoryId: string | null): OutputBlock {
+  const ps = projectsIn(categoryId);
+  if (ps.length === 0) return [dimLine("no projects here yet — check back soon.")];
   const out: OutputBlock = [];
-  profile.projects.forEach((p, i) => {
-    if (i > 0) out.push(blank());
-    out.push(line(g("◆ "), head(p.title)));
-    out.push(text("  " + p.desc));
-    if (p.tech.length) out.push(line(dim("  tech: " + p.tech.join(", "))));
-    if (p.link) out.push(line(span("  "), link(p.link, p.link)));
-  });
+  for (const p of ps) {
+    out.push(line(g("  " + p.slug.padEnd(20)), span(p.title)));
+  }
+  out.push(blank());
+  out.push(line(dim("view a project: "), g("open <slug>")));
+  return out;
+}
+
+function projDetailBlock(slug: string): OutputBlock {
+  const p = getProject(slug);
+  if (!p) return [line(span("no such project: ", "error"), span(slug, "error"))];
+  const out: OutputBlock = [line(head(p.title))];
+  if (p.date) out.push(line(dim(p.date)));
+  if (p.tech?.length) out.push(line(dim("tech: " + p.tech.join(", "))));
+  out.push(blank());
+  if (p.summary) out.push(text(p.summary));
+  out.push(blank());
+  out.push(line(dim("(view the full project page with rich media in the panel above)")));
   return out;
 }
 
@@ -222,7 +261,23 @@ const commandList: Command[] = [
     run: aboutBlock,
   },
   { name: "profession", description: "what I work on", run: professionBlock },
-  { name: "projects", description: "selected projects", run: projectsBlock },
+  {
+    name: "projects",
+    description: "open the project showcase",
+    run: (args, _raw, ctx) => {
+      const [catTok] = args;
+      if (!catTok) {
+        ctx.go({ view: "projects", section: null, category: null, post: null, project: null });
+        return projCategoryListBlock();
+      }
+      const cat = resolveProjCategory(catTok);
+      if (!cat) {
+        return [line(span("projects: unknown category: ", "error"), span(catTok, "error"))];
+      }
+      ctx.go({ view: "projects", section: null, category: cat, post: null, project: null });
+      return projListBlock(cat);
+    },
+  },
   { name: "experience", description: "work history", run: experienceBlock },
   { name: "education", description: "academic background", run: educationBlock },
   { name: "skills", description: "tools & technologies", run: skillsBlock },
@@ -258,7 +313,7 @@ const commandList: Command[] = [
     description: "navigate (cd technical, cd ai, cd .., cd ~)",
     run: (args, _raw, ctx) => {
       const tok = (args[0] ?? "").toLowerCase();
-      const { view, section, category, post } = ctx.nav;
+      const { view, section, category, post, project } = ctx.nav;
 
       if (tok === "" || tok === "~" || tok === "home") {
         ctx.go(HOME);
@@ -266,6 +321,22 @@ const commandList: Command[] = [
       }
       if (tok === "..") {
         if (view === "home") return [dimLine("already home")];
+
+        // projects view back-navigation
+        if (view === "projects") {
+          if (project) {
+            ctx.go({ project: null });
+            return projListBlock(category);
+          }
+          if (category) {
+            ctx.go({ category: null });
+            return projCategoryListBlock();
+          }
+          ctx.go(HOME);
+          return [dimLine("→ home")];
+        }
+
+        // blog view back-navigation
         if (post) {
           ctx.go({ post: null });
           return listForBlog({ ...ctx.nav, post: null });
@@ -282,7 +353,22 @@ const commandList: Command[] = [
         return [dimLine("→ home")];
       }
 
-      // navigate into a section or category
+      // "cd projects" from anywhere
+      if (tok === "projects") {
+        ctx.go({ view: "projects", section: null, category: null, post: null, project: null });
+        return projCategoryListBlock();
+      }
+
+      // navigate within projects view
+      if (view === "projects") {
+        const cat = resolveProjCategory(tok);
+        if (cat) {
+          ctx.go({ category: cat, project: null });
+          return projListBlock(cat);
+        }
+      }
+
+      // navigate into a blog section or category
       if (section) {
         const cat = resolveCategory(section, tok);
         if (cat) {
@@ -292,7 +378,7 @@ const commandList: Command[] = [
       }
       const sec = resolveSection(tok);
       if (sec) {
-        ctx.go({ view: "blog", section: sec, category: null, post: null });
+        ctx.go({ view: "blog", section: sec, category: null, post: null, project: null });
         return categoryListBlock(sec);
       }
       return [line(span("cd: no such location: ", "error"), span(tok, "error"))];
@@ -300,14 +386,26 @@ const commandList: Command[] = [
   },
   {
     name: "open",
-    description: "read a blog post (open <slug>)",
+    description: "open a blog post or project (open <slug>)",
     run: (args, _raw, ctx) => {
       const slug = args[0];
       if (!slug) return [text("usage: open <slug>")];
-      const p = getPost(slug);
-      if (!p) return [line(span("no such post: ", "error"), span(slug, "error"))];
-      ctx.go({ view: "blog", section: p.section, category: p.category, post: p.slug });
-      return postBlock(p.slug);
+
+      // try blog post first
+      const bp = getPost(slug);
+      if (bp) {
+        ctx.go({ view: "blog", section: bp.section, category: bp.category, post: bp.slug, project: null });
+        return postBlock(bp.slug);
+      }
+
+      // try project
+      const proj = getProject(slug);
+      if (proj) {
+        ctx.go({ view: "projects", section: null, category: proj.category, post: null, project: proj.slug });
+        return projDetailBlock(proj.slug);
+      }
+
+      return [line(span("no such post or project: ", "error"), span(slug, "error"))];
     },
   },
   {
@@ -323,6 +421,10 @@ const commandList: Command[] = [
     description: "list the current location",
     run: (_args, _raw, ctx) => {
       if (ctx.nav.view === "blog") return listForBlog(ctx.nav);
+      if (ctx.nav.view === "projects") {
+        if (ctx.nav.category) return projListBlock(ctx.nav.category);
+        return projCategoryListBlock();
+      }
       return [
         line(
           ...["about", "projects", "experience", "education", "skills", "contact", "resume", "blog"]

@@ -32,7 +32,6 @@ export const sections: BlogSection[] = [
     categories: [
       { id: "ai", label: "AI" },
       { id: "compute", label: "Compute" },
-      { id: "physics", label: "Physics" },
       { id: "future", label: "Future" },
       { id: "others", label: "Others" },
     ],
