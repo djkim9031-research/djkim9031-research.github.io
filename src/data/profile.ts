@@ -76,8 +76,8 @@ export const profile: Profile = {
       org: "Intuitive Surgical",
       period: "May 2026 – Present",
       summary:
-        "Future-forward research on GPU model training and inference optimization, " +
-        "and on developing Vision Foundation Models (VFM), Vision-Language-Action " +
+        "Future Forward Research group — GPU model training and inference " +
+        "optimization, developing Vision Foundation Models (VFM), Vision-Language-Action " +
         "(VLA), and World Action Models (WAM) for surgical robots.",
     },
     {
